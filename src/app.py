@@ -1,53 +1,67 @@
-from tkinter import *
-import customtkinter 
+import customtkinter as ctk
+import configure as cfg
 
-# theme configuration
-customtkinter.set_appearance_mode("dark");
-# customtkinter.set_default_color_theme("dark-blue");
+from ui_components.add_event_widgets import AddEvent_Widgets
+from ui_components.connect_server_widgets import ConnectSocket_Widgets
+from ui_components.environment_widgets import Environment_Widgets
 
-# Create object
-gui = customtkinter.CTk()
-# Set up title
-gui.title("MR.RED - Socket debugger tool")
-# Set up min size
-gui.minsize(width=720, height=720)
-# Set up background color
-gui.configure(bg="#262626")
+class App(ctk.CTk):    
+    def __init__(
+            self: ctk.CTk, 
+            title, 
+            bg_color: str, 
+            min_size: cfg.Size | None, 
+            max_size: cfg.Size | None):
+        
+        super().__init__()
 
-entry_connect_socket = customtkinter.CTkEntry(master=gui, width=320, placeholder_text="URL")
-entry_connect_socket.place(x=10, y=10);
+        # Init Configurations
+        self.wm_title(title)
+        if min_size is not None:
+            self.minsize(min_size.width, min_size.height)
+        if max_size is not None:
+            self.maxsize(max_size.width, max_size.height)
+        self.configure(bg=bg_color)
 
-#ff9900
-button_connect_socket = customtkinter.CTkButton(
-    master=gui, 
-    width=100, 
-    text="CONNECT", 
-    fg_color="#91e391", 
-    text_color="#404040")
-button_connect_socket.place(x=335, y=10);
+        # Init Menu
+        self.top_menu = TopPanel(parent=self)
+        self.middle_panel = MainPanel(parent=self)
 
-scrollable_frame_event = customtkinter.CTkScrollableFrame(gui, width=300, height=600)
-scrollable_frame_event.place(x=10, y=100)
+    def getServerURL(self):
+        return self.top_menu.connect_socket_widgets.getServerURL()
 
-scrollable_frame_request_body = customtkinter.CTkScrollableFrame(gui, width=900, height=290)
-scrollable_frame_request_body.place(x=340, y=100);
+    def setBTNConnectEvent(self, func):
+        self.top_menu.connect_socket_widgets.setBTNConnectEvent(func)
+    
 
-scrollable_frame_response_body = customtkinter.CTkScrollableFrame(gui, width=900, height=290)
-scrollable_frame_response_body.place(x=340, y=410);
+class TopPanel(ctk.CTkFrame):
+    def __init__(self: ctk.CTkFrame, parent: ctk.CTk):
+        super().__init__(parent, height=50, fg_color="Orange", bg_color="Orange")
+        self.place(x=0, y=0, relwidth=1)
+        
+        self.connect_socket_widgets = ConnectSocket_Widgets(self, cfg.Position(0, 0))
+        self.environment_widgets = Environment_Widgets(parent=self)
 
-entry_event_name = customtkinter.CTkEntry(master=gui, width=300, placeholder_text="Event name")
-entry_event_name.place(x=340, y=65);
 
-button_emit_request = customtkinter.CTkButton(
-    master=gui, 
-    width=50, 
-    text="RUN", 
-    fg_color="#91e391", 
-    text_color="#404040")
-button_emit_request.place(x=650, y=65);
+class MainPanel(ctk.CTkFrame):
+    def __init__(self: ctk.CTkFrame, parent: ctk.CTkFrame):
+        super().__init__(parent, height=50, fg_color="White", bg_color="White")
+        self.place(x=0, y=50, relwidth=1, relheight=1)
 
-optionmenu = customtkinter.CTkOptionMenu(gui, values=["no environment", "option 2"])
-optionmenu.set("no environment")
-optionmenu.place(x=445, y=10)
+        self.event_panel = EventPanel(self)
+        self.emit_panel = EmitPanel(self)
 
-gui.mainloop()
+class EventPanel(ctk.CTkFrame):
+    def __init__(self: ctk.CTkFrame, parent: ctk.CTk):
+        super().__init__(parent, width=250, fg_color="Gray", bg_color="White")
+        self.place(x=0, y=0, relheight=1)
+        self.add_event_widget = AddEvent_Widgets(self);
+
+        # scrollable_frame_event = ctk.CTkScrollableFrame(self, width=500)
+        # scrollable_frame_event.place(x=10, y=50, relheight=1)
+
+class EmitPanel(ctk.CTkFrame):
+    def __init__(self: ctk.CTkFrame, parent: ctk.CTk):
+        super().__init__(parent, width=200, fg_color="Gray", bg_color="White")
+        self.place(x=260, y=0, relheight=1, relwidth=1)
+

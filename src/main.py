@@ -11,16 +11,10 @@ customtkinter.set_appearance_mode("dark");
 
 application = app.App(
     title="MR.RED - Socket debugger tool", 
-    min_size=configure.Size(width=720, height=720),
+    min_size=configure.Size(width=1280, height=720),
     max_size=None,
     bg_color="#262626"
     );
-
-# def connectToServer():
-#     server_url = application.getServerURL();
-#     server.connect_server(server_url=server_url);
-
-# application.setBTNConnectEvent(connectToServer)
 
 
     

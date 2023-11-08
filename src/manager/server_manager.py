@@ -1,11 +1,17 @@
 import socketio
-import asyncio
 
 socket_io = socketio.Client(serializer='msgpack')
+callback = None
 
 def connect_server(server_url: str):
     print("server_url: ", server_url)
     socket_io.connect(server_url, transports=['websocket', 'polling'], wait_timeout=10)
+
+def emitReqeust(event_name, request_body, callback):
+    socket_io.emit(event_name, request_body, callback=callback)
+
+def onCompleteEmit(data):
+    print(data)
 
 def join_room():
     socket_io.emit('requestJoinGame', {
@@ -17,7 +23,7 @@ def join_room():
     }, callback=on_join_room)
 
 def on_join_room(data):
-    print(data)
+    print(type(data))
 
 @socket_io.event
 def connect():

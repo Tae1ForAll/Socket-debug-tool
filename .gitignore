@@ -154,6 +154,8 @@ cython_debug/
 
 # Custom
 *.bat
+output/
+.output
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

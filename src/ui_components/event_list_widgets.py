@@ -11,6 +11,7 @@ class ScrollEventList_Widgets(ctk.CTkFrame):
         super().__init__(parent, fg_color="#212121")
         self.place(x=position.x, y=position.y, relheight=0.9, relwidth=1);
         self.on_focus_button: ctk.CTkButton = None
+        self.current_event_id = None
         self.on_focus_callback = None
         self.event_dict: dict = {};
         self.list_event = ctk.CTkScrollableFrame(master=self, fg_color="#212121")
@@ -24,23 +25,25 @@ class ScrollEventList_Widgets(ctk.CTkFrame):
         if (self.on_focus_button is not None):
             self.on_focus_button.configure(fg_color="#212121")
         button.configure(fg_color="#343439")
-        self.on_focus_button = button
         if self.on_focus_callback is not None:
-            self.on_focus_callback(button, event_id)
+            self.on_focus_callback(button, event_id, self.current_event_id)
+        self.on_focus_button = button
+        self.current_event_id = event_id
     
     def setOnFocusEvent(self, callback):
         self.on_focus_callback = callback
 
-    def addToEventList(self, text: str, event_id: str = None):
+    def addToEventList(self, text: str, event_id: str = None, request_body: str = ""):
         if event_id is None:
             event_id = datetime.time().strftime('%Y%m-%d%H-%M%S-') + str(uuid4())
         button = ctk.CTkButton(self.list_event, text=text, fg_color="#212121", command=lambda:self.commandEventButon(button, event_id))
         button.pack(fill="both")
-        self.event_dict[event_id] = {"button": button, "request_body": ""}
+        self.event_dict[event_id] = {"button": button, "request_body": request_body}
 
     def deleteEvent(self):
         self.list_event.pack_slaves().remove(self.on_focus_button)
-        
+        self.event_dict.pop(self.current_event_id)
+        self.current_event_id = None
         if self.on_focus_button is not None:
             self.on_focus_button.destroy()
             self.on_focus_button = None
@@ -49,7 +52,9 @@ class ScrollEventList_Widgets(ctk.CTkFrame):
         for key, value in self.event_dict.items():
             button: ctk.CTkButton = value["button"]
             self.list_event.pack_slaves().remove(button)
-            button.destroy();
+            button.destroy()
+
+        self.event_dict = {}
             
         if self.on_focus_button is not None:
             self.on_focus_button.destroy()

@@ -38,7 +38,10 @@ class Environment_Widgets(ctk.CTkFrame):
         self.callbackSave = callback
 
     def updateEnvironment(self, envList: list):
-        current_value = self.environment_menu._values
+        current_value = ["no environment"]
         for i in envList:
             current_value.append(i);
-        self.environment_menu.configure(values=current_value)  
+        self.environment_menu.configure(values=current_value)
+
+    def getEnvironmentName(self):
+        return self.environment_menu.get()  

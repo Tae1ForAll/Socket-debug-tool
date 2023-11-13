@@ -1,17 +1,1 @@
-{
-    "monowheel_env": {
-        "events": {
-            "2023-11-08-event-id": {
-                "name": "requestJoinGame",
-                "request_body": {
-                    "pfid": "62130b00bc1acf58340948ae",
-                    "pfuid": "tae_888",
-                    "pfutk": "xxxxxxx",
-                    "gid": "64f83c43e4d49990ad35ee64",
-                    "wt": "seamless"
-                }
-            }
-        },
-        "server_url": "http://localhost:6789/socket.io"
-    }
-}
+{}

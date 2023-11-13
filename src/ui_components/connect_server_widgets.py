@@ -26,3 +26,6 @@ class ConnectSocket_Widgets(ctk.CTkFrame):
         text.trace("w", callback=None)
         self.entry_connect_socket.configure(textvariable = text);
 
+    def getServerUrl(self):
+        return self.entry_connect_socket.get();
+
